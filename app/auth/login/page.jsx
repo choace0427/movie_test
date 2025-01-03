@@ -25,7 +25,9 @@ export default function LoginPage() {
       toast.error(error.message);
     } else {
       toast.success("successful login");
-      localStorage.setItem("userSession", JSON.stringify(data));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("userSession", JSON.stringify(data));
+      }
       setTimeout(() => {
         router.replace("/films/list");
       }, 1000);

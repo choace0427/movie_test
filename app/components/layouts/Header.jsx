@@ -10,11 +10,13 @@ export default function HeaderComponent() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("userSession");
-    if (!token) {
-      router.replace("/auth/login");
-    } else {
-      setIsLoggedIn(true);
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("userSession");
+      if (!token) {
+        router.replace("/auth/login");
+      } else {
+        setIsLoggedIn(true);
+      }
     }
   }, [router]);
 

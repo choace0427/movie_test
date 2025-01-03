@@ -3,19 +3,7 @@
 import Footer from "./Footer";
 import HeaderComponent from "./Header";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useMemo } from "react";
-
-// function checkTokenValidity() {
-//   const token = localStorage.getItem("authToken");
-//   const expirationTime = localStorage.getItem("authTokenExpiration");
-
-//   if (!token || !expirationTime) {
-//     return false;
-//   }
-
-//   const currentTime = new Date().getTime();
-//   return currentTime < expirationTime;
-// }
+import { useMemo } from "react";
 
 export default function MainLayout({ children }) {
   const router = useRouter();

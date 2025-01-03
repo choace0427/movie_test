@@ -7,11 +7,13 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      router.push("/films/list");
-    } else {
-      router.push("/auth/login");
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        router.push("/films/list");
+      } else {
+        router.push("/auth/login");
+      }
     }
   }, [router]);
 
