@@ -40,12 +40,13 @@ export default function LoginPage() {
       const data = await response.json();
       if (typeof window !== "undefined") {
         localStorage.setItem("userSession", JSON.stringify(data));
+        toast.success("Successful Login!");
       }
       setTimeout(() => {
         router.replace("/films/list");
       }, 1000);
     } else {
-      const errorData = await response.text();
+      const errorData = await response.json();
       toast.error(errorData.message);
       setError(errorData.message);
     }
@@ -111,12 +112,6 @@ export default function LoginPage() {
           >
             Login
           </Button>
-
-          {error && (
-            <Text color="red" ta="center" mt="md">
-              {error}
-            </Text>
-          )}
 
           <Text ta="center" mt="md" color="white">
             Don't have an account?{" "}

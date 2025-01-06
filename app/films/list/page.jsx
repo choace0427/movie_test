@@ -71,7 +71,6 @@ export default function FilmList() {
   const filmsPerPage = 4;
 
   const fetchFilms = async (query, page) => {
-    console.log("========", user);
     if (user) {
       setLoading(true);
 

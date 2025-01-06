@@ -10,7 +10,7 @@ export async function POST(req) {
 
   if (error) {
     return new Response(JSON.stringify({ message: error.message }), {
-      status: 401,
+      status: 400,
       headers: { "Content-Type": "application/json" },
     });
   }
