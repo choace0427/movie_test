@@ -18,9 +18,7 @@ export default function MainLayout({ children }) {
     <div>
       {!isAuthPage && <HeaderComponent />}
       <main
-        className={`min-h-screen ${
-          isAuthPage ? "" : "mt-5 min-h-[calc(100vh-210px)]"
-        }`}
+        className={`md:min-h-[calc(100vh - 80px)] min-h-[calc(100vh - 100px)]`}
       >
         {children}
       </main>

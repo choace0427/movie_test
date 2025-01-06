@@ -15,21 +15,32 @@ import { supabase } from "@/app/lib/supabaseClient";
 import classes from "@/app/assets/css/AuthenticationImage.module.css";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useForm } from "@mantine/form";
 
 function Signup() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSignup = async () => {
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      password: (value) =>
+        value.length < 6 ? "Password must be at least 6 characters" : null,
+    },
+  });
+
+  const handleSignup = async (values) => {
     setLoading(true);
     setError(null);
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: values.email,
+      password: values.password,
     });
 
     if (error) {
@@ -51,70 +62,76 @@ function Signup() {
 
   return (
     <div className={classes.wrapper}>
-      <Paper className={classes.form} radius={0} p={30}>
-        <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
-          Create an Account
-        </Title>
+      <form onSubmit={form.onSubmit(handleSignup)}>
+        <Paper className={classes.form} radius={0} p={30}>
+          <Title
+            order={2}
+            className={classes.title}
+            ta="center"
+            mt="md"
+            mb={50}
+          >
+            Create an Account
+          </Title>
 
-        <TextInput
-          label="Email address"
-          placeholder="hello@gmail.com"
-          size="md"
-          value={email}
-          onChange={(event) => setEmail(event.currentTarget.value)}
-          styles={{
-            input: {
-              backgroundColor: "#224957",
-              color: "white",
-              border: "#224957",
-            },
-            label: {
-              color: "white",
-            },
-          }}
-        />
-        <PasswordInput
-          label="Password"
-          placeholder="Your password"
-          mt="md"
-          size="md"
-          value={password}
-          onChange={(event) => setPassword(event.currentTarget.value)}
-          styles={{
-            input: {
-              backgroundColor: "#224957",
-              color: "white",
-              border: "#224957",
-            },
-            label: {
-              color: "white",
-            },
-          }}
-        />
-        <Button
-          fullWidth
-          mt="xl"
-          size="md"
-          onClick={handleSignup}
-          loading={loading}
-          color="green"
-        >
-          Sign Up
-        </Button>
+          <TextInput
+            label="Email address"
+            placeholder="hello@gmail.com"
+            size="md"
+            {...form.getInputProps("email")}
+            styles={{
+              input: {
+                backgroundColor: "#224957",
+                color: "white",
+                border: "#224957",
+              },
+              label: {
+                color: "white",
+              },
+            }}
+          />
+          <PasswordInput
+            label="Password"
+            placeholder="Your password"
+            mt="md"
+            size="md"
+            {...form.getInputProps("password")}
+            styles={{
+              input: {
+                backgroundColor: "#224957",
+                color: "white",
+                border: "#224957",
+              },
+              label: {
+                color: "white",
+              },
+            }}
+          />
+          <Button
+            fullWidth
+            mt="xl"
+            size="md"
+            loading={loading}
+            color="green"
+            type="submit"
+          >
+            Sign Up
+          </Button>
 
-        {error && (
-          <Text color="red" ta="center" mt="md">
-            {error}
+          {error && (
+            <Text color="red" ta="center" mt="md">
+              {error}
+            </Text>
+          )}
+
+          <Text ta="center" mt="md" color="white">
+            Already have an account?{" "}
+            <Anchor color="green" fw={700} onClick={() => router.push("login")}>
+              Login
+            </Anchor>
           </Text>
-        )}
-
-        <Text ta="center" mt="md" color="white">
-          Already have an account?{" "}
-          <Anchor color="green" fw={700} onClick={() => router.push("login")}>
-            Login
-          </Anchor>
-        </Text>
-      </Paper>
+        </Paper>
+      </form>
     </div>
   );
 }

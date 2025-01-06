@@ -22,7 +22,7 @@ import {
 import { supabase } from "@/app/lib/supabaseClient";
 import { authStore } from "../../_store/auth";
 import { useRouter } from "next/navigation";
-import { IconHeart, IconPlus } from "@tabler/icons-react";
+import { IconHeart, IconPlus, IconX } from "@tabler/icons-react";
 
 import classes from "@/app/assets/css/BadgeCard.module.css";
 
@@ -163,7 +163,7 @@ export default function FilmList() {
                   <Card
                     radius="md"
                     p={{ base: 0, sm: "md" }}
-                    className={`${classes.card} hover:scale-[1.05] hover:shadow-lg transition-transform duration-200`}
+                    className={`${classes.card} hover:scale-[1.05] hover:shadow-lg transition-transform duration-200 hover:cursor-pointer`}
                     bg={"#092C39"}
                     onClick={() => router.replace(`edit/${film.film_id}`)}
                   >

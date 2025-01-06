@@ -7,7 +7,7 @@ export default function Footer() {
         backgroundColor: "transparent",
         color: "white",
       }}
-      className="w-full h-[110px] md:mt-20 sm:mt-10 mt-0"
+      className="w-full h-[110px] md:mt-24 sm:mt-10 mt-10"
     >
       <Image
         src="/img/background_footer.png"

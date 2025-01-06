@@ -9,7 +9,7 @@
   min-height: 900px;
   max-width: 450px;
   padding-top: 80px;
-  height: 100%;
+  height: 100vh;
   background-color: #093545;
 
   @media (max-width: 732px) {
