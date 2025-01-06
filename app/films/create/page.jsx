@@ -59,20 +59,27 @@ export default function FilmCreate() {
     }
 
     try {
-      const { data, error } = await supabase.from("films").insert([
-        {
-          title: values.title,
-          publish_year: values.publishYear,
-          poster_img: images,
-          description: values.description,
-          user_id: user.id,
+      const response = await fetch("/api/films/createFilm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
+        body: JSON.stringify({
+          title: values.title,
+          publishYear: values.publishYear,
+          posterImg: images,
+          description: values.description,
+          userId: user.id,
+        }),
+      });
 
-      if (error) {
-        throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error);
       }
-      toast.success("Film data created successfully");
+
+      toast.success(result.message);
       setTimeout(() => {
         router.push("list");
       }, 1000);

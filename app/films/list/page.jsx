@@ -73,22 +73,17 @@ export default function FilmList() {
   const fetchFilms = async (query = "", page = 1) => {
     if (user) {
       setLoading(true);
-      const start = (page - 1) * filmsPerPage;
-      const end = start + filmsPerPage - 1;
 
-      const { data, error, count } = await supabase
-        .from("films")
-        .select("*", { count: "exact" })
-        .eq("user_id", user.id)
-        .ilike("title", `%${query}%`)
-        .order("film_id", { ascending: true })
-        .range(start, end);
+      const response = await fetch(
+        `/api/films/list?query=${query}&page=${page}`
+      );
+      const { films, totalPages } = await response.json();
 
-      if (error) {
-        console.error("Error fetching films:", error);
+      if (response.ok) {
+        setFilms(films);
+        setTotalPages(totalPages);
       } else {
-        setFilms(data);
-        setTotalPages(Math.ceil(count / filmsPerPage));
+        console.error("Error fetching films:", films.error);
       }
       setLoading(false);
     }

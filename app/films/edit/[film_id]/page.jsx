@@ -85,19 +85,23 @@ export default function FilmEdit({ params: { film_id } }) {
     }
 
     try {
-      const { data, error } = await supabase
-        .from("films")
-        .update({
+      const response = await fetch(`/api/films/${film_id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           title: values.title,
           publish_year: values.publishYear,
           poster_img: images,
           description: values.description,
-        })
-        .eq("film_id", film_id);
+        }),
+      });
 
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        throw new Error("Error updating film data");
       }
+
       toast.success("Film data updated successfully");
       setTimeout(() => {
         router.replace("/films/list");

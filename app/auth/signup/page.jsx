@@ -38,25 +38,26 @@ function Signup() {
   const handleSignup = async (values) => {
     setLoading(true);
     setError(null);
-    const { data, error } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
+
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: values.email,
+        password: values.password,
+      }),
     });
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Please confirm your email");
-      const { error: insertError } = await supabase
-        .from("users")
-        .insert([{ user_id: data.user.id, email: data.user.email }]);
+    const data = await response.text();
 
-      if (insertError) {
-        toast.error(insertError.message);
-      } else {
-        console.log("User added to users table");
-      }
+    if (!response.ok) {
+      toast.error(data.error);
+    } else {
+      toast.success(data.message);
     }
+
     setLoading(false);
   };
 

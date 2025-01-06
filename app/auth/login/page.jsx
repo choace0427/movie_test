@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { TextInput, Button, Paper, Title, Text, Anchor } from "@mantine/core";
-import { supabase } from "@/app/lib/supabaseClient";
-import classes from "@/app/assets/css/AuthenticationImage.module.css";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useForm } from "@mantine/form";
+import classes from "@/app/assets/css/AuthenticationImage.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,13 +28,16 @@ export default function LoginPage() {
 
   const handleLogin = async (values) => {
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
     });
-    if (error) {
-      toast.error(error.message);
-    } else {
+
+    if (response.ok) {
+      const data = await response.text();
       toast.success("successful login");
       if (typeof window !== "undefined") {
         localStorage.setItem("userSession", JSON.stringify(data));
@@ -43,6 +45,10 @@ export default function LoginPage() {
       setTimeout(() => {
         router.replace("/films/list");
       }, 1000);
+    } else {
+      const errorData = await response.text();
+      toast.error(errorData.message);
+      setError(errorData.message);
     }
     setLoading(false);
   };
