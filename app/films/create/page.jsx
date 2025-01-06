@@ -59,7 +59,7 @@ export default function FilmCreate() {
     }
 
     try {
-      const response = await fetch("/api/films/createFilm", {
+      const response = await fetch("/api/films/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

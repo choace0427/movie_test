@@ -70,20 +70,29 @@ export default function FilmList() {
   const [totalPages, setTotalPages] = useState(1);
   const filmsPerPage = 4;
 
-  const fetchFilms = async (query = "", page = 1) => {
+  const fetchFilms = async (query, page) => {
+    console.log("========", user);
     if (user) {
       setLoading(true);
 
       const response = await fetch(
-        `/api/films/list?query=${query}&page=${page}`
+        `/api/films/list?query=${query}&page=${page}&userId=${user.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
-      const { films, totalPages } = await response.json();
 
       if (response.ok) {
+        const data = await response.json();
+        const { films, totalPages } = data;
+
         setFilms(films);
         setTotalPages(totalPages);
       } else {
-        console.error("Error fetching films:", films.error);
+        console.error("Error fetching films:", response.statusText);
       }
       setLoading(false);
     }

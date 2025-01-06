@@ -1,32 +1,41 @@
 import { supabase } from "@/app/lib/supabaseClient";
 
-export default async function handler(req, res) {
-  if (req.method === "POST") {
-    const { title, publishYear, posterImg, description, userId } = req.body;
+export async function POST(req) {
+  const { title, publishYear, posterImg, description, userId } =
+    await req.json();
 
-    try {
-      const { data, error } = await supabase.from("films").insert([
-        {
-          title,
-          publish_year: publishYear,
-          poster_img: posterImg,
-          description,
-          user_id: userId,
-        },
-      ]);
+  try {
+    const { data, error } = await supabase.from("films").insert([
+      {
+        title,
+        publish_year: publishYear,
+        poster_img: posterImg,
+        description,
+        user_id: userId,
+      },
+    ]);
 
-      if (error) {
-        return res.status(400).json({ error: error.message });
-      }
-
-      return res
-        .status(200)
-        .json({ message: "Film data created successfully", data });
-    } catch (error) {
-      return res.status(500).json({ error: "Error submitting film data" });
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400,
+      });
     }
-  } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    return new Response(
+      JSON.stringify({ message: "Film data created successfully", data }),
+      { status: 200 }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: "Error submitting film data" }),
+      {
+        status: 500,
+      }
+    );
   }
+}
+
+export function OPTIONS(req, res) {
+  res.setHeader("Allow", ["POST"]);
+  res.status(405).end(`Method ${req.method} Not Allowed`);
 }

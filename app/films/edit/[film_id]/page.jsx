@@ -53,11 +53,8 @@ export default function FilmEdit({ params: { film_id } }) {
 
   useEffect(() => {
     const fetchFilmData = async () => {
-      const { data, error } = await supabase
-        .from("films")
-        .select("*")
-        .eq("film_id", film_id)
-        .single();
+      const response = await fetch(`/api/films/edit/${film_id}`);
+      const { data, error } = await response.json();
 
       if (error) {
         console.error("Error fetching film data:", error);
@@ -85,16 +82,16 @@ export default function FilmEdit({ params: { film_id } }) {
     }
 
     try {
-      const response = await fetch(`/api/films/${film_id}`, {
+      const response = await fetch(`/api/films/edit/${film_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: values.title,
-          publish_year: values.publishYear,
+          title: form.values.title,
+          publish_year: form.values.publishYear,
           poster_img: images,
-          description: values.description,
+          description: form.values.description,
         }),
       });
 

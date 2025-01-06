@@ -1,29 +1,40 @@
 import { supabase } from "@/app/lib/supabaseClient";
 
-export default async function handler(req, res) {
-  const { user } = req;
-  const { query, page = 1, filmsPerPage = 4 } = req.query;
+export async function GET(req) {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
 
-  if (!user) {
-    return res.status(401).json({ error: "Unauthorized" });
+  const { query = "", page = 1, filmsPerPage = 4, userId } = queryParams;
+
+  const pageNumber = parseInt(page, 10);
+  if (isNaN(pageNumber) || pageNumber < 1) {
+    return new Response(JSON.stringify({ error: "Invalid page number" }), {
+      status: 400,
+    });
   }
 
-  const start = (page - 1) * filmsPerPage;
+  const start = (pageNumber - 1) * filmsPerPage;
   const end = start + filmsPerPage - 1;
 
   const { data, error, count } = await supabase
     .from("films")
     .select("*", { count: "exact" })
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .ilike("title", `%${query}%`)
     .order("film_id", { ascending: true })
     .range(start, end);
 
   if (error) {
-    return res.status(500).json({ error: "Error fetching films" });
+    return new Response(JSON.stringify({ error: "Error fetching films" }), {
+      status: 500,
+    });
   }
 
-  res
-    .status(200)
-    .json({ films: data, totalPages: Math.ceil(count / filmsPerPage) });
+  return new Response(
+    JSON.stringify({
+      films: data,
+      totalPages: Math.ceil(count / filmsPerPage),
+    }),
+    { status: 200 }
+  );
 }

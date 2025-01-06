@@ -37,8 +37,7 @@ export default function LoginPage() {
     });
 
     if (response.ok) {
-      const data = await response.text();
-      toast.success("successful login");
+      const data = await response.json();
       if (typeof window !== "undefined") {
         localStorage.setItem("userSession", JSON.stringify(data));
       }
